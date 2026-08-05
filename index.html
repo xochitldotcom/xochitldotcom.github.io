@@ -1,19 +1,655 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
+  <!-- Makes the page responsive on phones and tablets -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lorem Ipsum Test Page</title>
+
+  <meta
+    name="description"
+    content="IT support resume and professional profile for Xochitl Torres."
+  >
+
+  <title>Xochitl Torres | IT Support Resume</title>
+
+  <style>
+    /* =========================================================
+       1. BASIC COLORS
+       Change these values to customize the design.
+       ========================================================= */
+    :root {
+      --background: #f4f6f8;
+      --card: #ffffff;
+      --text: #20242a;
+      --muted: #5f6875;
+      --accent: #3157d5;
+      --accent-dark: #2444ad;
+      --border: #dfe3e8;
+      --tag: #e9edff;
+      --shadow: 0 12px 35px rgba(30, 40, 60, 0.10);
+    }
+
+    /* Dark-mode colors */
+    body.dark-mode {
+      --background: #12151b;
+      --card: #1b2028;
+      --text: #f4f6f8;
+      --muted: #b4bdc9;
+      --accent: #8fa7ff;
+      --accent-dark: #b6c4ff;
+      --border: #333b47;
+      --tag: #293454;
+      --shadow: 0 12px 35px rgba(0, 0, 0, 0.30);
+    }
+
+    /* =========================================================
+       2. PAGE RESET
+       ========================================================= */
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* =========================================================
+       3. TOP NAVIGATION
+       ========================================================= */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 5%;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .top-bar strong {
+      font-size: 1rem;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    button,
+    .button-link {
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    button:hover,
+    .button-link:hover {
+      background: var(--accent-dark);
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .secondary-button {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* =========================================================
+       4. MAIN RESUME LAYOUT
+       ========================================================= */
+    .resume {
+      width: min(1050px, 92%);
+      margin: 2rem auto;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: 3rem;
+      background:
+        linear-gradient(135deg, rgba(49, 87, 213, 0.95), rgba(80, 46, 160, 0.92));
+      color: #ffffff;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3.6rem);
+      line-height: 1.1;
+    }
+
+    .hero .job-title {
+      margin: 0.6rem 0 1.2rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin-bottom: 0;
+    }
+
+    .contact-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.3rem;
+      margin-top: 1.4rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .contact-list a {
+      color: #ffffff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+    }
+
+    .main-column,
+    .side-column {
+      padding: 2.4rem;
+    }
+
+    .side-column {
+      background: color-mix(in srgb, var(--card) 94%, var(--accent) 6%);
+      border-left: 1px solid var(--border);
+    }
+
+    section + section {
+      margin-top: 2.5rem;
+    }
+
+    h2 {
+      margin-top: 0;
+      padding-bottom: 0.45rem;
+      color: var(--accent);
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .entry {
+      padding: 0 0 1.4rem 1.2rem;
+      border-left: 3px solid var(--border);
+    }
+
+    .entry:last-child {
+      padding-bottom: 0;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .company {
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    .date {
+      flex-shrink: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .entry ul {
+      margin-bottom: 0;
+      padding-left: 1.2rem;
+    }
+
+    .entry li {
+      margin-bottom: 0.35rem;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tag {
+      padding: 0.4rem 0.65rem;
+      background: var(--tag);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.88rem;
+    }
+
+    .simple-list {
+      padding-left: 1.2rem;
+    }
+
+    .simple-list li {
+      margin-bottom: 0.45rem;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    footer {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* =========================================================
+       5. RESPONSIVE DESIGN
+       ========================================================= */
+    @media (max-width: 760px) {
+      .top-bar {
+        position: static;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero,
+      .main-column,
+      .side-column {
+        padding: 1.6rem;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .side-column {
+        border-top: 1px solid var(--border);
+        border-left: none;
+      }
+
+      .entry-header {
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+    }
+
+    /* =========================================================
+       6. PRINT SETTINGS
+       These styles make the resume look cleaner when saved as PDF.
+       ========================================================= */
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      .top-bar {
+        display: none;
+      }
+
+      .resume {
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .hero {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .entry {
+        break-inside: avoid;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Lorem Ipsum</h1>
-  <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua.
-  </p>
-  <p>
-    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-    ut aliquip ex ea commodo consequat.
-  </p>
+  <!-- =======================================================
+       TOP BUTTONS
+       ======================================================= -->
+  <nav class="top-bar" aria-label="Resume tools">
+    <strong>Xochitl Torres — Resume</strong>
+
+    <div class="button-group">
+      <button id="themeButton" class="secondary-button" type="button">
+        Dark mode
+      </button>
+
+      <button id="printButton" type="button">
+        Print / Save PDF
+      </button>
+    </div>
+  </nav>
+
+  <!-- =======================================================
+       RESUME
+       ======================================================= -->
+  <main class="resume">
+    <header class="hero">
+      <h1>Xochitl Torres</h1>
+      <p class="job-title">IT Support & Technical Operations Professional</p>
+
+      <p>
+        Customer-focused technical support professional with experience
+        troubleshooting SaaS platforms, supporting business applications,
+        documenting solutions, and helping users resolve technical issues.
+        Interested in IT support, cybersecurity, GRC, and technology operations.
+      </p>
+
+      <ul class="contact-list">
+        <li>Guadalajara, Mexico</li>
+        <li>English & Spanish</li>
+        <li>
+          <a
+            href="https://www.linkedin.com/in/xochitltrrs/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn Profile
+          </a>
+        </li>
+      </ul>
+    </header>
+
+    <div class="content-grid">
+      <!-- MAIN / LEFT COLUMN -->
+      <div class="main-column">
+        <section id="experience">
+          <h2>Professional Experience</h2>
+
+          <article class="entry">
+            <div class="entry-header">
+              <div>
+                <h3>Technical Support Specialist</h3>
+                <div class="company">Ottimate</div>
+              </div>
+              <span class="date">2026 – Present</span>
+            </div>
+
+            <ul>
+              <li>
+                Troubleshoot customer issues involving SaaS workflows,
+                invoice processing, payments, user permissions, and system
+                integrations.
+              </li>
+              <li>
+                Investigate application behavior using internal support tools,
+                logs, documentation, and ticket history.
+              </li>
+              <li>
+                Explain technical solutions clearly to customers and internal
+                teams through written support communication.
+              </li>
+              <li>
+                Escalate product defects, integration issues, and feature
+                requests with organized technical notes.
+              </li>
+            </ul>
+          </article>
+
+          <article class="entry">
+            <div class="entry-header">
+              <div>
+                <h3>Level 1 Technical Support</h3>
+                <div class="company">Nextiva</div>
+              </div>
+              <span class="date">2025</span>
+            </div>
+
+            <ul>
+              <li>
+                Supported users with desktop, mobile, VoIP, and account-related
+                technical issues.
+              </li>
+              <li>
+                Troubleshot IP phones, network connectivity, device
+                provisioning, and application settings.
+              </li>
+              <li>
+                Managed customer cases in Salesforce and documented steps,
+                findings, and resolutions.
+              </li>
+              <li>
+                Followed security, privacy, and customer-verification
+                procedures while handling account information.
+              </li>
+            </ul>
+          </article>
+
+          <article class="entry">
+            <div class="entry-header">
+              <div>
+                <h3>Operations Team Lead</h3>
+                <div class="company">RJW Logistics / Rapido Solutions</div>
+              </div>
+              <span class="date">2023 – 2024</span>
+            </div>
+
+            <ul>
+              <li>
+                Led daily operations, monitored team performance, and helped
+                improve response-time and service-level metrics.
+              </li>
+              <li>
+                Created SOPs, training materials, workflows, and quality
+                standards for the team.
+              </li>
+              <li>
+                Coordinated escalations and communicated with customers,
+                carriers, managers, and cross-functional teams.
+              </li>
+              <li>
+                Used multiple business platforms to track work, resolve
+                operational problems, and maintain accurate records.
+              </li>
+            </ul>
+          </article>
+        </section>
+
+        <section id="projects">
+          <h2>Relevant Projects & Learning</h2>
+
+          <article class="entry">
+            <h3>Cybersecurity and GRC Studies</h3>
+            <ul>
+              <li>
+                Studying security operations, alert prioritization, incident
+                analysis, governance, risk, and compliance fundamentals.
+              </li>
+              <li>
+                Practicing documentation of known facts, assumptions, risks,
+                unknowns, and recommended next steps.
+              </li>
+            </ul>
+          </article>
+
+          <article class="entry">
+            <h3>Process Documentation</h3>
+            <ul>
+              <li>
+                Created support explanations, troubleshooting notes, training
+                materials, and standard operating procedures.
+              </li>
+              <li>
+                Translated complex workflows into clear instructions for
+                technical and non-technical users.
+              </li>
+            </ul>
+          </article>
+        </section>
+
+        <section id="education">
+          <h2>Education</h2>
+
+          <article class="entry">
+            <div class="entry-header">
+              <div>
+                <h3>Bachelor's Degree in Fashion & Clothing Design</h3>
+                <div class="company">
+                  ITESO — Minor in Business Development and Commerce
+                </div>
+              </div>
+              <span class="date">2021</span>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <!-- SIDE / RIGHT COLUMN -->
+      <aside class="side-column">
+        <section id="skills">
+          <h2>Technical Skills</h2>
+
+          <ul class="tag-list">
+            <li class="tag">Technical Support</li>
+            <li class="tag">SaaS Troubleshooting</li>
+            <li class="tag">Ticket Management</li>
+            <li class="tag">VoIP Support</li>
+            <li class="tag">Networking Basics</li>
+            <li class="tag">User Permissions</li>
+            <li class="tag">ERP Integrations</li>
+            <li class="tag">Incident Documentation</li>
+            <li class="tag">Cybersecurity Basics</li>
+            <li class="tag">GRC Fundamentals</li>
+            <li class="tag">Process Improvement</li>
+            <li class="tag">Customer Support</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Tools</h2>
+
+          <ul class="simple-list">
+            <li>Salesforce</li>
+            <li>Jira</li>
+            <li>QuickBooks Online</li>
+            <li>NetSuite</li>
+            <li>Sage Intacct</li>
+            <li>RingCentral</li>
+            <li>Log analysis and internal admin tools</li>
+            <li>Microsoft Office and Google Workspace</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Core Strengths</h2>
+
+          <ul class="simple-list">
+            <li>Clear written communication</li>
+            <li>Customer empathy</li>
+            <li>Analytical troubleshooting</li>
+            <li>Attention to detail</li>
+            <li>Process documentation</li>
+            <li>Cross-functional collaboration</li>
+            <li>Team leadership</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Additional Training</h2>
+
+          <ul class="simple-list">
+            <li>Cybersecurity and GRC coursework</li>
+            <li>Python for Non-Programmers</li>
+            <li>Process Improvement Foundations</li>
+            <li>Agile Project Management with Jira Cloud</li>
+          </ul>
+
+          <p class="small-note">
+            Tip: Replace this section with certifications as you complete them.
+          </p>
+        </section>
+
+        <section>
+          <h2>Languages</h2>
+
+          <ul class="simple-list">
+            <li>Spanish — Native</li>
+            <li>English — Professional working proficiency</li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <footer>
+      © <span id="currentYear"></span> Xochitl Torres
+    </footer>
+  </main>
+
+  <script>
+    /* =========================================================
+       BEGINNER-FRIENDLY JAVASCRIPT
+       ========================================================= */
+
+    // Finds the buttons and the year area in the HTML.
+    const themeButton = document.getElementById("themeButton");
+    const printButton = document.getElementById("printButton");
+    const currentYear = document.getElementById("currentYear");
+
+    // Automatically displays the current year.
+    currentYear.textContent = new Date().getFullYear();
+
+    // Switches between light mode and dark mode.
+    themeButton.addEventListener("click", function () {
+      document.body.classList.toggle("dark-mode");
+
+      if (document.body.classList.contains("dark-mode")) {
+        themeButton.textContent = "Light mode";
+      } else {
+        themeButton.textContent = "Dark mode";
+      }
+    });
+
+    // Opens the browser's print window.
+    // The user can also select "Save as PDF."
+    printButton.addEventListener("click", function () {
+      window.print();
+    });
+  </script>
 </body>
 </html>
