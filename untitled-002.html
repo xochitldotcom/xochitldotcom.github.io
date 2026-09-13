@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="untitled 002 — poesia rave">
+  <title>untitled 002 | poesia rave</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .top {
+      position: fixed;
+      top: 22px;
+      left: 24px;
+      right: 24px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      letter-spacing: .08em;
+    }
+
+    .top a:hover {
+      text-decoration: underline;
+    }
+
+    .center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(70px, 16vw, 220px);
+      line-height: .78;
+      letter-spacing: -.08em;
+      text-align: center;
+      text-transform: lowercase;
+      mix-blend-mode: difference;
+    }
+
+    .field {
+      position: absolute;
+      inset: 0;
+    }
+
+    .particle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      opacity: .72;
+      user-select: none;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 150px;
+      height: 150px;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 30;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-dot {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 31;
+      mix-blend-mode: difference;
+    }
+
+    .hint {
+      position: fixed;
+      left: 24px;
+      bottom: 22px;
+      z-index: 20;
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      opacity: .45;
+    }
+
+    @media (pointer: fine) {
+      html, body { cursor: none; }
+    }
+
+    @media (pointer: coarse) {
+      .cursor-ring,
+      .cursor-dot { display: none; }
+    }
+
+    @media (max-width: 700px) {
+      .top { top: 16px; left: 16px; right: 16px; }
+      .hint { left: 16px; bottom: 16px; }
+      .particle { font-size: 10px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stage">
+    <nav class="top">
+      <a href="poesia-rave.html">← poesia rave</a>
+      <span>untitled 002</span>
+    </nav>
+
+    <div class="field" id="field"></div>
+
+    <div class="center">
+      <h1 class="title">untitled<br>002</h1>
+    </div>
+
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="hint">move through it</div>
+  </div>
+
+  <script>
+    const field = document.getElementById('field');
+    const cursorRing = document.getElementById('cursorRing');
+    const cursorDot = document.getElementById('cursorDot');
+
+    const particles = [];
+    const total = 72;
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    function buildField() {
+      field.innerHTML = '';
+      particles.length = 0;
+
+      for (let i = 0; i < total; i++) {
+        const el = document.createElement('span');
+        el.className = 'particle';
+        el.textContent = i % 3 === 0 ? '002' : '·';
+
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+
+        field.appendChild(el);
+        particles.push({ el, x, y });
+      }
+    }
+
+    window.addEventListener('mousemove', (event) => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+
+      cursorRing.style.left = mouseX + 'px';
+      cursorRing.style.top = mouseY + 'px';
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+    });
+
+    window.addEventListener('resize', buildField);
+
+    function animate() {
+      particles.forEach((particle) => {
+        const dx = particle.x - mouseX;
+        const dy = particle.y - mouseY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const radius = 180;
+
+        let pushX = 0;
+        let pushY = 0;
+
+        if (distance < radius && distance > 0) {
+          const force = (radius - distance) / radius;
+          pushX = (dx / distance) * force * 70;
+          pushY = (dy / distance) * force * 70;
+        }
+
+        particle.el.style.transform =
+          `translate3d(${particle.x - window.innerWidth / 2 + pushX}px, ${particle.y - window.innerHeight / 2 + pushY}px, 0)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    buildField();
+    animate();
+  </script>
+</body>
+</html>
