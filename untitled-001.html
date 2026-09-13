@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="untitled 001 — poesia rave">
+  <title>untitled 001 | poesia rave</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .top {
+      position: fixed;
+      top: 22px;
+      left: 24px;
+      right: 24px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      letter-spacing: .08em;
+    }
+
+    .top a:hover { text-decoration: underline; }
+
+    .center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(64px, 14vw, 190px);
+      line-height: .78;
+      letter-spacing: -.075em;
+      text-transform: lowercase;
+      will-change: transform;
+    }
+
+    .sub {
+      margin-top: 24px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: lowercase;
+      opacity: .65;
+      will-change: transform;
+    }
+
+    .word {
+      position: absolute;
+      font-family: "Courier New", monospace;
+      font-size: clamp(11px, 1.3vw, 17px);
+      text-transform: lowercase;
+      white-space: nowrap;
+      opacity: .8;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .w1 { left: 8%; top: 21%; }
+    .w2 { right: 10%; top: 17%; }
+    .w3 { left: 18%; bottom: 17%; }
+    .w4 { right: 16%; bottom: 20%; }
+    .w5 { left: 6%; top: 63%; }
+    .w6 { right: 5%; top: 57%; }
+
+    .cursor {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: #fff;
+      mix-blend-mode: difference;
+      pointer-events: none;
+      z-index: 50;
+      transform: translate(-50%, -50%);
+      transition: width .18s ease, height .18s ease;
+    }
+
+    .hint {
+      position: fixed;
+      left: 24px;
+      bottom: 22px;
+      z-index: 20;
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      opacity: .45;
+    }
+
+    @media (pointer: coarse) {
+      html, body { cursor: auto; }
+      .cursor { display: none; }
+    }
+
+    @media (max-width: 700px) {
+      .top { top: 16px; left: 16px; right: 16px; }
+      .hint { left: 16px; bottom: 16px; }
+      .word { opacity: .55; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <nav class="top">
+      <a href="poesia-rave.html">← poesia rave</a>
+      <span>untitled 001</span>
+    </nav>
+
+    <div class="center">
+      <div>
+        <h1 class="title" data-depth="0.055">untitled<br>001</h1>
+        <p class="sub" data-depth="-0.025">move / hover / stay</p>
+      </div>
+    </div>
+
+    <span class="word w1" data-depth="0.12">look at me</span>
+    <span class="word w2" data-depth="-0.09">not yet</span>
+    <span class="word w3" data-depth="0.075">closer</span>
+    <span class="word w4" data-depth="-0.13">maybe</span>
+    <span class="word w5" data-depth="0.10">again</span>
+    <span class="word w6" data-depth="-0.07">don't stop</span>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="hint">move your mouse</div>
+  </div>
+
+  <script>
+    const layers = document.querySelectorAll('[data-depth]');
+    const cursor = document.getElementById('cursor');
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let currentX = 0;
+    let currentY = 0;
+
+    window.addEventListener('mousemove', (event) => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+
+    window.addEventListener('mousedown', () => {
+      cursor.style.width = '54px';
+      cursor.style.height = '54px';
+    });
+
+    window.addEventListener('mouseup', () => {
+      cursor.style.width = '86px';
+      cursor.style.height = '86px';
+    });
+
+    function animate() {
+      const targetX = mouseX - window.innerWidth / 2;
+      const targetY = mouseY - window.innerHeight / 2;
+
+      currentX += (targetX - currentX) * 0.075;
+      currentY += (targetY - currentY) * 0.075;
+
+      layers.forEach((layer) => {
+        const depth = Number(layer.dataset.depth);
+        const x = currentX * depth;
+        const y = currentY * depth;
+        layer.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
