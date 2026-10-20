@@ -1,211 +1,431 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Poesia Rave — Xochitl Torres">
-  <title>poesia rave | Xochitl Torres</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="poesia rave — xochitl torres">
+<title>poesia rave</title>
+<style>
+:root{
+  --paper:#efede7;
+  --ink:#0d0d0d;
+  --blue:#304bff;
+  --pink:#ff4aa2;
+  --blood:#7c1111;
+  --grey:#8f8b84;
+}
+*{box-sizing:border-box}
+html{cursor:crosshair}
+body{
+  margin:0;
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--ink);
+  background:
+    repeating-linear-gradient(0deg,rgba(0,0,0,.018) 0,rgba(0,0,0,.018) 1px,transparent 1px,transparent 4px),
+    radial-gradient(circle at 82% 15%,rgba(48,75,255,.07),transparent 24%),
+    radial-gradient(circle at 14% 76%,rgba(124,17,17,.055),transparent 28%),
+    var(--paper);
+  font-family:Arial,Helvetica,sans-serif;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at center,transparent 55%,rgba(0,0,0,.12) 145%);
+  z-index:1000;
+}
+::selection{background:var(--blue);color:white}
 
-  <style>
-    :root {
-      --background: #000000;
-      --text: #ffffff;
-      --border: #ffffff;
-    }
+.topbar{
+  position:fixed;top:0;left:0;right:0;
+  z-index:50;
+  height:34px;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 10px;
+  border-bottom:1px solid var(--ink);
+  background:rgba(239,237,231,.8);
+  backdrop-filter:blur(5px);
+  font:9px/1 "Courier New",monospace;
+  text-transform:uppercase;
+}
+.topbar a{color:inherit;text-decoration:none}
+.topbar .blink::before{content:"●";color:var(--blue);margin-right:6px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
 
-    * { box-sizing: border-box; }
+.stage{
+  position:relative;
+  min-height:100vh;
+  padding:70px 3vw 40px;
+}
 
-    body {
-      margin: 0;
-      background: var(--background);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.6;
-    }
+.micro{
+  font:9px/1.4 "Courier New",monospace;
+  text-transform:uppercase;
+  letter-spacing:.35px;
+}
+.coordinates{position:absolute;top:52px;left:3vw;opacity:.55}
+.warning{position:absolute;right:3vw;top:52px;text-align:right;color:var(--blood)}
 
-    a {
-      color: var(--text);
-      text-underline-offset: 4px;
-    }
+.hero{
+  position:relative;
+  min-height:62vh;
+  display:flex;align-items:center;
+}
 
-    a:hover {
-      background: var(--text);
-      color: var(--background);
-    }
+.title-wrap{
+  position:relative;
+  z-index:10;
+  width:min-content;
+  margin-left:1vw;
+}
+.title{
+  position:relative;
+  display:flex;
+  color:var(--ink);
+  text-decoration:none;
+  font-family:"Times New Roman",serif;
+  font-size:clamp(92px,18vw,265px);
+  line-height:.67;
+  letter-spacing:-.105em;
+  text-transform:lowercase;
+  filter:contrast(1.03);
+}
+.title .letter{
+  display:inline-block;
+  position:relative;
+  transition:transform 70ms linear,filter 70ms linear;
+  will-change:transform;
+}
+.title .letter::before,.title .letter::after{
+  content:attr(data-char);
+  position:absolute;inset:0;
+  pointer-events:none;
+  opacity:.7;
+  mix-blend-mode:multiply;
+}
+.title .letter::before{color:var(--pink);transform:translate(-3px,1px);clip-path:inset(0 0 53% 0)}
+.title .letter::after{color:var(--blue);transform:translate(3px,-1px);clip-path:inset(50% 0 0 0)}
+.title:hover .letter:nth-child(2n){animation:ruptureA .13s steps(2) infinite}
+.title:hover .letter:nth-child(2n+1){animation:ruptureB .11s steps(2) infinite}
+@keyframes ruptureA{
+  0%{transform:translate(0,0) skewX(0)}
+  33%{transform:translate(-7px,2px) skewX(8deg)}
+  66%{transform:translate(5px,-2px) scaleY(1.05)}
+}
+@keyframes ruptureB{
+  0%{transform:translate(0,0)}
+  40%{transform:translate(8px,-1px) skewX(-7deg)}
+  80%{transform:translate(-4px,3px) scaleX(1.05)}
+}
+.title-caption{margin:16px 0 0 1vw;width:340px;color:#3a3936}
+.title-caption b{font-weight:normal;color:var(--blue)}
 
-    header,
-    main,
-    footer {
-      width: 90%;
-      max-width: 900px;
-      margin: auto;
-    }
+.orbit-note{
+  position:absolute;
+  left:54%;top:26%;
+  width:125px;height:125px;
+  border:1px solid var(--ink);
+  border-radius:50%;
+  display:grid;place-items:center;
+  font:9px/1.1 "Courier New",monospace;
+  text-align:center;text-transform:uppercase;
+  transform:rotate(9deg);
+  background:rgba(255,255,255,.22);
+}
+.orbit-note::after{
+  content:"";
+  width:7px;height:7px;background:var(--ink);border-radius:50%;
+  position:absolute;top:-4px;left:57%;
+  box-shadow:0 0 0 5px rgba(48,75,255,.18);
+}
 
-    header {
-      padding: 18px 0;
-      border-bottom: 1px solid var(--border);
-      font-family: "Courier New", monospace;
-      font-size: 13px;
-    }
+/* deliberately un-grid */
+.files{
+  position:relative;
+  min-height:620px;
+  border-top:1px solid var(--ink);
+  margin-top:20px;
+}
+.file{
+  position:absolute;
+  width:min(355px,36vw);
+  min-height:185px;
+  border:1px solid var(--ink);
+  background:rgba(245,243,238,.88);
+  box-shadow:8px 8px 0 rgba(0,0,0,.08);
+  color:var(--ink);
+  text-decoration:none;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+  overflow:hidden;
+}
+.file:nth-child(1){left:3%;top:70px;transform:rotate(-2.2deg)}
+.file:nth-child(2){left:38%;top:225px;transform:rotate(1.4deg)}
+.file:nth-child(3){right:3%;top:35px;transform:rotate(2.8deg)}
+.file:hover{z-index:20;box-shadow:15px 16px 0 rgba(0,0,0,.14);background:#fff;transform:rotate(0deg) translateY(-8px)}
+.filebar{
+  height:25px;border-bottom:1px solid var(--ink);
+  display:flex;justify-content:space-between;align-items:center;padding:0 7px;
+  font:8px/1 "Courier New",monospace;text-transform:uppercase
+}
+.filebar .controls{letter-spacing:4px}
+.filebody{padding:17px 16px 18px}
+.filenum{font:9px/1 "Courier New",monospace;color:var(--blood)}
+.filetitle{
+  margin:7px 0 18px;
+  font:normal clamp(44px,6vw,79px)/.76 "Times New Roman",serif;
+  letter-spacing:-.07em
+}
+.filemeta{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font:8px/1.35 "Courier New",monospace;text-transform:uppercase}
+.filemeta span:nth-child(even){text-align:right}
+.file:nth-child(2):hover{background:var(--blue);color:white}
+.file:nth-child(2):hover .filenum{color:#ffd4eb}
+.file:nth-child(3):hover{background:#101010;color:white}
+.file::after{
+  content:attr(data-ghost);
+  position:absolute;right:7px;bottom:-8px;
+  font:42px/.8 "Times New Roman",serif;
+  letter-spacing:-.08em;
+  opacity:.035;
+  pointer-events:none;
+}
 
-    .back {
-      text-decoration: none;
-    }
+.dead-file{
+  position:absolute;
+  left:14%;top:395px;
+  width:185px;
+  border:1px dashed var(--ink);
+  padding:10px;
+  background:rgba(255,255,255,.22);
+  font:8px/1.4 "Courier New",monospace;
+  text-transform:uppercase;
+  user-select:none;
+  cursor:grab;
+  transform:rotate(-5deg);
+}
+.dead-file:active{cursor:grabbing}
+.dead-file strong{display:block;font-family:Arial;font-size:18px;text-transform:none;margin:4px 0;font-weight:normal}
 
-    main {
-      min-height: 75vh;
-      padding: 90px 0;
-    }
+.stupid{
+  position:absolute;
+  right:22%;bottom:65px;
+  max-width:230px;
+  font:24px/.95 "Times New Roman",serif;
+  transform:rotate(-3deg)
+}
+.stupid small{display:block;margin-top:13px;font:8px/1.3 "Courier New",monospace;text-transform:uppercase;opacity:.55}
 
-    .eyebrow {
-      color: var(--text);
-      font-family: "Courier New", monospace;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+.footer{
+  border-top:1px solid var(--ink);
+  min-height:110px;
+  padding:15px 3vw 35px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  font:8px/1.45 "Courier New",monospace;
+  text-transform:uppercase
+}
 
-    h1 {
-      margin: 0 0 35px;
-      font-size: clamp(55px, 11vw, 110px);
-      line-height: 0.9;
-      letter-spacing: -6px;
-      text-transform: lowercase;
-    }
+.trail{
+  position:fixed;
+  width:10px;height:10px;
+  border:1px solid var(--blue);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:999;
+  animation:decay .9s forwards;
+  mix-blend-mode:multiply
+}
+@keyframes decay{to{opacity:0;transform:scale(5)}}
 
-    .intro {
-      max-width: 620px;
-      color: var(--text);
-      opacity: 0.7;
-      font-family: "Courier New", monospace;
-      font-size: 14px;
-    }
+.spawn{
+  position:fixed;
+  z-index:900;
+  pointer-events:none;
+  font:8px/1 "Courier New",monospace;
+  color:var(--blood);
+  background:rgba(239,237,231,.9);
+  border:1px solid currentColor;
+  padding:4px 5px;
+  animation:spawnOut 2.4s forwards
+}
+@keyframes spawnOut{0%{opacity:0;transform:translateY(8px)}10%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
 
-    .poem {
-      margin-top: 70px;
-      padding-top: 30px;
-      border-top: 1px solid var(--border);
-      max-width: 650px;
-    }
+.idle-message{
+  position:fixed;inset:0;
+  display:grid;place-items:center;
+  background:rgba(8,8,8,.94);
+  color:#f2f0ea;
+  z-index:2000;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s;
+  font:13px/1.4 "Courier New",monospace;
+  text-align:center;text-transform:lowercase
+}
+.idle-message.show{opacity:1}
+.idle-message span{display:block;font-size:8px;margin-top:13px;opacity:.55;text-transform:uppercase}
 
-    .poem h2 {
-      font-size: 18px;
-      font-family: "Courier New", monospace;
-      text-transform: lowercase;
-    }
-
-    .poem p {
-      white-space: pre-line;
-    }
-
-    footer {
-      padding: 30px 0;
-      border-top: 1px solid var(--border);
-      color: var(--text);
-      opacity: 0.7;
-      font-family: "Courier New", monospace;
-      font-size: 12px;
-    }
-
-    @media (max-width: 750px) {
-      h1 { letter-spacing: -3px; }
-      main { padding-top: 60px; }
-    }
-  </style>
+@media(max-width:780px){
+  .stage{padding-top:70px}
+  .hero{min-height:62vh;align-items:flex-start}
+  .title{font-size:clamp(80px,25vw,150px)}
+  .orbit-note{right:4%;left:auto;top:10%;width:80px;height:80px;font-size:7px}
+  .files{min-height:auto;padding:45px 0}
+  .file{position:relative!important;left:auto!important;right:auto!important;top:auto!important;width:92%;margin:0 auto 36px;transform:rotate(0deg)!important}
+  .dead-file{position:relative;left:auto;top:auto;margin:15px 4% 45px}
+  .stupid{position:relative;right:auto;bottom:auto;margin:25px 4% 55px}
+  .footer{gap:30px;flex-direction:column}
+}
+</style>
 </head>
 <body>
-  <header>
-    <a class="back" href="index.html">← xo / torres</a>
-  </header>
+<div class="topbar">
+  <a href="index.html">xo / poesia rave</a>
+  <div class="blink">connection unstable</div>
+</div>
 
-  <main>
-    <p class="eyebrow">escritura / sonido / performance</p>
-    <h1>poesia rave</h1>
+<main class="stage" id="stage">
+  <div class="coordinates micro">archive 000—003<br>querétaro.mx / 2026</div>
+  <div class="warning micro">do not refresh<br>it remembers</div>
 
-    <p class="intro">
-      El laboratorio propone desarrollar una pieza individual a partir de herramientas de creación literaria, producción sonora y otros híbridos
-      haciendo dialogar la literatura contemporánea con la música electrónica y las artes vivas. 
-      Como resultado, una muestra tendrá lugar en Salón Liminal, a modo de exposición colectiva el 17 de octubre de 2026. 
-    </p>
+  <section class="hero">
+    <div class="title-wrap">
+      <a class="title" id="title" href="mouse.html" aria-label="hyperpop — open mouse interaction">
+        <span class="letter" data-char="h">h</span><span class="letter" data-char="y">y</span><span class="letter" data-char="p">p</span><span class="letter" data-char="e">e</span><span class="letter" data-char="r">r</span><span class="letter" data-char="p">p</span><span class="letter" data-char="o">o</span><span class="letter" data-char="p">p</span>
+      </a>
+      <div class="title-caption micro">poesia rave / <b>touch title to enter mouse file</b><br>literatura / sonido / body error</div>
+    </div>
+    <div class="orbit-note">private<br>public<br>private<br>public</div>
+  </section>
 
-    <!-- Replace the text inside each <p> with your poem. -->
-    <article class="poem">
-      <h2><a href="untitled-001.html">untitled 001</a></h2>
-      <p>
-aqui va a decir mi poema o lo qu sea o una descripcion ahi vemos.
-      </p>
-    </article>
-    <article class="poem">
-      <h2><a href="untitled-002.html">untitled 002</a></h2>
-      <p>
-blahblahblah
-      </p>
-    </article>
-    <article class="poem">
-      <h2><a href="untitled-003.html">untitled 003</a></h2>
-      <p>
-lorem ipsun o no se XD
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 004</h2>
-      <p>
-ay ya no se que mas escribir
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 005</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 006</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 007</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 008</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 009</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 010</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 011</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-    <article class="poem">
-      <h2>untitled 012</h2>
-      <p>
-replace this text with your poem.
-      </p>
-    </article>
-  </main>
+  <section class="files" aria-label="poems">
+    <a class="file" href="untitled-001.html" data-ghost="DO NOT OPEN">
+      <div class="filebar"><span>FILE_001.TXT</span><span class="controls">— □ ×</span></div>
+      <div class="filebody">
+        <div class="filenum">001 / text recovered</div>
+        <div class="filetitle">untitled</div>
+        <div class="filemeta"><span>status</span><span>open</span><span>body</span><span>present</span><span>memory</span><span>unreliable</span></div>
+      </div>
+    </a>
 
-  <footer>
-    xochitl torres · poesia rave
-  </footer>
+    <a class="file" href="untitled-002.html" data-ghost="AUDIO BREATHING">
+      <div class="filebar"><span>FILE_002.WAV</span><span class="controls">— □ ×</span></div>
+      <div class="filebody">
+        <div class="filenum">002 / audio fragment</div>
+        <div class="filetitle">untitled</div>
+        <div class="filemeta"><span>signal</span><span>weak</span><span>machine</span><span>awake</span><span>desire</span><span>buffering</span></div>
+      </div>
+    </a>
+
+    <a class="file" href="untitled-003.html" data-ghost="DON'T SEND">
+      <div class="filebar"><span>FILE_003.JPG</span><span class="controls">— □ ×</span></div>
+      <div class="filebody">
+        <div class="filenum">003 / private image</div>
+        <div class="filetitle">untitled</div>
+        <div class="filemeta"><span>visibility</span><span>bad</span><span>kiss</span><span>offline</span><span>shame</span><span>online</span></div>
+      </div>
+    </a>
+
+    <div class="dead-file" id="deadFile">
+      corrupted attachment
+      <strong>sorry.zip</strong>
+      drag me somewhere less embarrassing
+    </div>
+
+    <div class="stupid">i made a website instead of saying it normally.<small>last modified at an irresponsible hour</small></div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div>xochitl torres<br>poesia rave<br>three files only</div>
+  <div>internet connection: technically yes<br>emotional connection: pending<br>unknown process: still active</div>
+</footer>
+
+<div class="idle-message" id="idle">
+  are you still there?<span>move the mouse. unfortunately.</span>
+</div>
+
+<script>
+const title = document.getElementById('title');
+const letters = [...title.querySelectorAll('.letter')];
+
+// Mouse proximity deforms each letter differently.
+document.addEventListener('mousemove', (e) => {
+  letters.forEach((letter, i) => {
+    const r = letter.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const d = Math.hypot(dx, dy);
+    const influence = Math.max(0, 1 - d / 230);
+    const x = -(dx / Math.max(d, 1)) * influence * (10 + (i % 3) * 4);
+    const y = -(dy / Math.max(d, 1)) * influence * 10;
+    const rot = influence * (i % 2 ? 8 : -8);
+    const sx = 1 + influence * (i % 2 ? .09 : -.04);
+    letter.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg) scaleX(${sx})`;
+    letter.style.filter = influence > .55 ? 'blur(.35px) contrast(1.25)' : 'none';
+  });
+});
+
+title.addEventListener('mouseleave', () => {
+  letters.forEach(l => { l.style.transform=''; l.style.filter=''; });
+});
+
+// Circular cursor residue.
+let lastTrail = 0;
+document.addEventListener('mousemove', e => {
+  const now = Date.now();
+  if(now-lastTrail < 70) return;
+  lastTrail = now;
+  const t = document.createElement('i');
+  t.className='trail';
+  t.style.left=(e.clientX-5)+'px';
+  t.style.top=(e.clientY-5)+'px';
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),900);
+  resetIdle();
+});
+
+// Clicking blank space produces useless little system messages.
+const messages=['wrong folder','nothing happened','seen 03:33','do not send','user unknown','still loading','bad idea','file remembers'];
+document.addEventListener('click', e => {
+  if(e.target.closest('a,.dead-file')) return;
+  const s=document.createElement('span');
+  s.className='spawn';
+  s.textContent=messages[Math.floor(Math.random()*messages.length)];
+  s.style.left=e.clientX+'px';
+  s.style.top=e.clientY+'px';
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(),2400);
+});
+
+// Drag the pointless corrupted file.
+const dead=document.getElementById('deadFile');
+let dragging=false,ox=0,oy=0;
+dead.addEventListener('pointerdown',e=>{
+  if(innerWidth<780) return;
+  dragging=true;
+  const r=dead.getBoundingClientRect();
+  ox=e.clientX-r.left; oy=e.clientY-r.top;
+  dead.setPointerCapture(e.pointerId);
+});
+dead.addEventListener('pointermove',e=>{
+  if(!dragging) return;
+  const parent=dead.parentElement.getBoundingClientRect();
+  dead.style.left=(e.clientX-parent.left-ox)+'px';
+  dead.style.top=(e.clientY-parent.top-oy)+'px';
+});
+dead.addEventListener('pointerup',()=>dragging=false);
+
+// Idle state: page becomes a dead screen until the user moves again.
+const idle=document.getElementById('idle');
+let idleTimer;
+function resetIdle(){
+  idle.classList.remove('show');
+  clearTimeout(idleTimer);
+  idleTimer=setTimeout(()=>idle.classList.add('show'),8000);
+}
+['keydown','scroll','pointerdown'].forEach(ev=>document.addEventListener(ev,resetIdle,{passive:true}));
+resetIdle();
+</script>
 </body>
 </html>
