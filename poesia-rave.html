@@ -113,6 +113,65 @@
       main { padding-top: 60px; }
     }
   </style>
+  /* GLITCH POEM TITLES */
+
+.glitch {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.glitch:hover {
+  background: transparent;
+  color: white;
+  animation: glitch-main 0.25s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glitch:hover::before {
+  opacity: 0.8;
+  color: #00ffff;
+  transform: translate(-3px, 0);
+  clip-path: inset(0 0 55% 0);
+  animation: glitch-top 0.2s infinite;
+}
+
+.glitch:hover::after {
+  opacity: 0.8;
+  color: #ff00ff;
+  transform: translate(3px, 0);
+  clip-path: inset(55% 0 0 0);
+  animation: glitch-bottom 0.18s infinite;
+}
+
+@keyframes glitch-main {
+  0%   { transform: translate(0); }
+  25%  { transform: translate(-1px, 1px); }
+  50%  { transform: translate(2px, -1px); }
+  75%  { transform: translate(-2px, 0); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-top {
+  0%   { transform: translate(-2px, -1px); }
+  50%  { transform: translate(3px, 1px); }
+  100% { transform: translate(-1px, 0); }
+}
+
+@keyframes glitch-bottom {
+  0%   { transform: translate(2px, 1px); }
+  50%  { transform: translate(-3px, -1px); }
+  100% { transform: translate(1px, 0); }
+}
 </head>
 <body>
   <header>
@@ -131,8 +190,13 @@
 
     <!-- Replace the text inside each <p> with your poem. -->
     <article class="poem">
-      <h2><a href="untitled-001.html">untitled 001</a></h2>
-      <p>
+<h2>
+  <a href="untitled-001.html"
+     class="glitch"
+     data-text="untitled 001">
+     untitled 001
+  </a>
+</h2>      <p>
 aqui va a decir mi poema o lo qu sea o una descripcion ahi vemos.
       </p>
     </article>
