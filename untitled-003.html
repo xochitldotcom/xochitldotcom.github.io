@@ -1,222 +1,349 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="Cache-Control" content="no-cache">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="untitled 003 — poesia rave">
+  <title>untitled 003 | poesia rave</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    * { box-sizing: border-box; }
 
-        <link rel="apple-touch-icon" href="logo.png">
-        <link rel="icon" href="logo.png">
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-        <title>WebGL Fluid Simulation</title>
-        <meta name="description" content="A WebGL fluid simulation that works in mobile browsers.">
+    a { color: inherit; text-decoration: none; }
 
-        <meta property="og:type" content="website">
-        <meta property="og:title" content="Webgl Fluid Simulation">
-        <meta property="og:description" content="A WebGL fluid simulation that works in mobile browsers.">
-        <meta property="og:url" content="https://paveldogreat.github.io/WebGL-Fluid-Simulation/">
-        <meta property="og:image" content="https://paveldogreat.github.io/WebGL-Fluid-Simulation/logo.png">
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #000;
+      isolation: isolate;
+    }
 
-        <script type="text/javascript" src="dat.gui.min.js"></script>
-        <style>
-            @font-face {
-                font-family: 'iconfont';
-                src: url('iconfont.ttf') format('truetype');
-            }
+    .top {
+      position: fixed;
+      top: 22px;
+      left: 24px;
+      right: 24px;
+      z-index: 30;
+      display: flex;
+      justify-content: space-between;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      letter-spacing: .08em;
+    }
 
-            * {
-                user-select: none;
-            }
+    .top a:hover { text-decoration: underline; }
 
-            html, body {
-                overflow: hidden;
-                background-color: #000;
-            }
+    .center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 8;
+    }
 
-            body {
-                margin: 0;
-                position: fixed;
-                width: 100%;
-                height: 100%;
-            }
+    .title {
+      margin: 0;
+      font-size: clamp(72px, 16vw, 220px);
+      line-height: .77;
+      letter-spacing: -.085em;
+      text-align: center;
+      text-transform: lowercase;
+      mix-blend-mode: difference;
+      will-change: transform, filter;
+    }
 
-            canvas {
-                width: 100%;
-                height: 100%;
-            }
+    .shard {
+      position: absolute;
+      font-family: "Courier New", monospace;
+      font-size: clamp(10px, 1vw, 14px);
+      line-height: 1.25;
+      white-space: nowrap;
+      opacity: .62;
+      pointer-events: none;
+      user-select: none;
+      will-change: transform, opacity;
+    }
 
-            .dg {
-                opacity: 0.9;
-            }
+    .tear {
+      position: absolute;
+      width: min(44vw, 560px);
+      height: 1px;
+      left: 50%;
+      top: 50%;
+      background: #fff;
+      transform-origin: left center;
+      opacity: .18;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
 
-            .dg .property-name {
-                overflow: visible;
-            }
+    .echo {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 24px;
+      height: 24px;
+      border: 1px solid #fff;
+      transform: translate(-50%, -50%) rotate(45deg);
+      pointer-events: none;
+      z-index: 40;
+      mix-blend-mode: difference;
+      transition: width .16s ease, height .16s ease, border-radius .16s ease;
+    }
 
-            .bigFont {
-                font-size: 150%;
-                color: #8C8C8C;
-            }
+    .trail {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 5px;
+      height: 5px;
+      background: #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 39;
+      mix-blend-mode: difference;
+    }
 
-            .cr.function.appBigFont {
-                font-size: 150%;
-                line-height: 27px;
-                color: #A5F8D3;
-                background-color: #023C40;
-            }
+    .hint {
+      position: fixed;
+      left: 24px;
+      bottom: 22px;
+      z-index: 30;
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      opacity: .45;
+    }
 
-            .cr.function.appBigFont .property-name {
-                float: none;
-            }
+    .counter {
+      position: fixed;
+      right: 24px;
+      bottom: 22px;
+      z-index: 30;
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      opacity: .32;
+    }
 
-            .cr.function.appBigFont .icon {
-                position: sticky;
-                bottom: 27px;
-            }
+    @media (pointer: fine) {
+      html, body { cursor: none; }
+    }
 
-            .icon {
-                font-family: 'iconfont';
-                font-size: 130%;
-                float: right;
-            }
+    @media (pointer: coarse) {
+      .echo, .trail { display: none; }
+    }
 
-            .twitter:before {
-                content: 'a';
-            }
+    @media (max-width: 700px) {
+      .top { top: 16px; left: 16px; right: 16px; }
+      .hint { left: 16px; bottom: 16px; }
+      .counter { right: 16px; bottom: 16px; }
+      .shard { opacity: .5; }
+    }
+  </style>
+</head>
 
-            .github:before {
-                content: 'b';
-            }
+<body>
+  <div class="stage" id="stage">
+    <nav class="top">
+      <a href="poesia-rave%20wavecoded.html">← poesia rave</a>
+      <span>untitled 003</span>
+    </nav>
 
-            .app:before {
-                content: 'c';
-            }
+    <div class="center">
+      <h1 class="title" id="title">untitled<br>003</h1>
+    </div>
 
-            .discord:before {
-                content: 'd';
-            }
+    <div id="fragments" aria-hidden="true"></div>
+    <div id="tears" aria-hidden="true"></div>
 
-            .promo {
-                display: none;
-                /* display: table; */
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 1;
-                overflow: auto;
-                color: lightblue;
-                background-color: rgba(0,0,0,0.4);
-                animation: promo-appear-animation 0.35s ease-out;
-            }
+    <div class="echo" id="echo"></div>
+    <div class="trail" id="trail"></div>
 
-            .promo-middle {
-                display: table-cell;
-                vertical-align: middle;
-            }
+    <div class="hint">arrastra / rompe / suelta</div>
+    <div class="counter" id="counter">000</div>
+  </div>
 
-            .promo-content {
-                width: 80vw;
-                height: 80vh;
-                max-width: 80vh;
-                max-height: 80vw;
-                margin: auto;
-                padding: 0;
-                font-size: 2.8vmax;
-                font-family: Futura, "Trebuchet MS", Arial, sans-serif;
-                text-align: center;
-                background-image: url("promo_back.png");
-                background-position: center;
-                background-repeat: no-repeat;
-                background-size: cover;
-                border-radius: 15px;
-                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-            }
+  <script>
+    const stage = document.getElementById('stage');
+    const title = document.getElementById('title');
+    const echo = document.getElementById('echo');
+    const trail = document.getElementById('trail');
+    const fragments = document.getElementById('fragments');
+    const tears = document.getElementById('tears');
+    const counter = document.getElementById('counter');
 
-            .promo-header {
-                height: 10%;
-                padding: 2px 16px;
-            }
+    const phrases = [
+      'no era para siempre',
+      'todavia vibra',
+      'otra vez aqui',
+      'sin instrucciones',
+      'me fui antes',
+      'no me alcanzas',
+      'repite / borra / repite',
+      'casi desaparece',
+      'nadie dijo cuando',
+      'ruido residual',
+      'lo deje abierto',
+      'sigue despues de mi'
+    ];
 
-            .promo-close {
-                width: 10%;
-                height: 100%;
-                text-align: left;
-                float: left;
-                font-size: 1.3em;
-                /* transition: 0.2s; */
-            }
+    const shards = [];
+    const lines = [];
+    const totalShards = 34;
+    const totalLines = 11;
 
-            .promo-close:hover {
-                /* transform: scale(1.25); */
-                cursor: pointer;
-            }
+    let mouseX = innerWidth / 2;
+    let mouseY = innerHeight / 2;
+    let smoothX = mouseX;
+    let smoothY = mouseY;
+    let pressed = false;
+    let energy = 0;
+    let count = 0;
 
-            .promo-body {
-                padding: 8px 16px 16px 16px;
-                margin: auto;
-            }
+    function build() {
+      fragments.innerHTML = '';
+      tears.innerHTML = '';
+      shards.length = 0;
+      lines.length = 0;
 
-            .promo-body p {
-                margin-top: 0;
-                mix-blend-mode: color-dodge;
-            }
+      for (let i = 0; i < totalShards; i++) {
+        const el = document.createElement('span');
+        el.className = 'shard';
+        el.textContent = phrases[i % phrases.length];
 
-            .link {
-                width: 100%;
-                display: inline-block;
-            }
+        const x = Math.random() * innerWidth;
+        const y = Math.random() * innerHeight;
+        const drift = 0.35 + Math.random() * 1.5;
+        const turn = -10 + Math.random() * 20;
+        const seed = Math.random() * Math.PI * 2;
 
-            .link img {
-                width: 100%;
-            }
+        fragments.appendChild(el);
+        shards.push({ el, x, y, drift, turn, seed });
+      }
 
-            @keyframes promo-appear-animation {
-                0% {
-                    transform: scale(2.0);
-                    opacity: 0;
-                }
-                100% {
-                    transform: scale(1.0);
-                    opacity: 1;
-                }
-            }
-        </style>
-        <script>
-            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-            ga('create', 'UA-105392568-1', 'auto');
-            ga('send', 'pageview');
-        </script>
-        <script async src="https://www.google-analytics.com/analytics.js"></script>
-    </head>
-    <body>
-        <canvas></canvas>
+      for (let i = 0; i < totalLines; i++) {
+        const el = document.createElement('div');
+        el.className = 'tear';
+        tears.appendChild(el);
+        lines.push({
+          el,
+          angle: Math.random() * 360,
+          offset: (Math.random() - .5) * 220,
+          speed: .18 + Math.random() * .5
+        });
+      }
+    }
 
-        <!-- Mother of God, pls forgive me -->
-        <div class="promo">
-            <div class="promo-middle">
-                <div class="promo-content">
-                    <div class="promo-header">
-                        <span class="promo-close">&times;</span>
-                    </div>
-                    <div class="promo-body">
-                        <p>Try Fluid Simulation app!</p>
-                        <div class="links-container">
-                            <a class="link" id="apple_link" target="_blank">
-                                <img class="link-img" alt="Download on the App Store" src="app_badge.png"/>
-                            </a>
-                            <a class="link" id="google_link" target="_blank">
-                                <img class="link-img" alt="Get it on Google Play" src="gp_badge.png"/>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    function move(x, y) {
+      mouseX = x;
+      mouseY = y;
+      echo.style.left = x + 'px';
+      echo.style.top = y + 'px';
+      trail.style.left = x + 'px';
+      trail.style.top = y + 'px';
+    }
+
+    window.addEventListener('mousemove', (event) => {
+      move(event.clientX, event.clientY);
+      energy = Math.min(1, energy + .035);
+    });
+
+    window.addEventListener('mousedown', () => {
+      pressed = true;
+      energy = 1;
+      count++;
+      counter.textContent = String(count).padStart(3, '0');
+      echo.style.width = '72px';
+      echo.style.height = '72px';
+      echo.style.borderRadius = '50%';
+    });
+
+    window.addEventListener('mouseup', () => {
+      pressed = false;
+      echo.style.width = '24px';
+      echo.style.height = '24px';
+      echo.style.borderRadius = '0';
+    });
+
+    window.addEventListener('touchstart', (event) => {
+      if (!event.touches.length) return;
+      move(event.touches[0].clientX, event.touches[0].clientY);
+      pressed = true;
+      energy = 1;
+      count++;
+      counter.textContent = String(count).padStart(3, '0');
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (event) => {
+      if (!event.touches.length) return;
+      move(event.touches[0].clientX, event.touches[0].clientY);
+      energy = Math.min(1, energy + .05);
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      pressed = false;
+    });
+
+    window.addEventListener('resize', build);
+
+    function animate(time) {
+      smoothX += (mouseX - smoothX) * .08;
+      smoothY += (mouseY - smoothY) * .08;
+      energy *= .965;
+
+      const nx = (smoothX / innerWidth - .5) * 2;
+      const ny = (smoothY / innerHeight - .5) * 2;
+
+      title.style.transform = `translate3d(${nx * 18}px, ${ny * 18}px, 0) skewX(${nx * 2.8}deg)`;
+      title.style.filter = pressed ? 'blur(2px)' : 'blur(0px)';
+
+      shards.forEach((shard, i) => {
+        const dx = shard.x - smoothX;
+        const dy = shard.y - smoothY;
+        const distance = Math.max(1, Math.hypot(dx, dy));
+        const radius = pressed ? 360 : 210;
+        const force = distance < radius ? (radius - distance) / radius : 0;
+        const pulse = Math.sin(time * .001 * shard.drift + shard.seed) * 7;
+        const blast = pressed ? force * 150 : force * 45;
+        const pushX = (dx / distance) * blast;
+        const pushY = (dy / distance) * blast;
+        const floatX = Math.sin(time * .0006 + shard.seed) * 9;
+        const floatY = Math.cos(time * .0005 + shard.seed) * 9;
+
+        shard.el.style.transform = `translate3d(${shard.x + pushX + floatX}px, ${shard.y + pushY + floatY}px, 0) rotate(${shard.turn + pulse * .15}deg)`;
+        shard.el.style.opacity = String(.28 + Math.min(.62, force * .7 + .18));
+      });
+
+      lines.forEach((line, i) => {
+        const wobble = Math.sin(time * .0005 * line.speed + i) * 14;
+        const scale = .55 + energy * 1.15 + (i % 3) * .08;
+        line.el.style.transform = `translate3d(${smoothX - innerWidth / 2}px, ${smoothY - innerHeight / 2 + line.offset + wobble}px, 0) rotate(${line.angle + nx * 20}deg) scaleX(${scale})`;
+        line.el.style.opacity = String(.04 + energy * .2);
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    build();
+    move(mouseX, mouseY);
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
+
         </div>
 
         <script src="./script.js"></script>
